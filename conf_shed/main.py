@@ -19,18 +19,20 @@ db = SessionLocal()
 templates = Jinja2Templates(directory="templates")
 
 
+# Главная страница
 @app.get('/', response_class=HTMLResponse)
-@app.get('/index', response_class=HTMLResponse)
 def index(request: Request):
     number = '1'
     return templates.TemplateResponse(request=request, name="index.html", context={"number": number})
 
 
+# Страница с формой записи
 @app.get('/reg', response_class=HTMLResponse)
 def reg(request: Request):
     return templates.TemplateResponse(request=request, name="reg.html")
 
 
+# Listener запись на презентацию
 @app.post('/regsuc', response_class=HTMLResponse)
 def regsuc(request: Request, name=Form(), pr_id=Form()):
     pres = db.query(Shedule).filter(Shedule.pr_id == int(pr_id)).first()
@@ -39,14 +41,10 @@ def regsuc(request: Request, name=Form(), pr_id=Form()):
     else:
         pres.listeners = f"{pres.listeners}\r\n{name}"
     db.commit()
-    return templates.TemplateResponse(request=request, name="regsuc.html", context={'name':name, 'pr_id':pr_id})
+    return templates.TemplateResponse(request=request, name="regsuc.html", context={'name': name, 'pr_id': pr_id})
 
 
-@app.get('/pr-reg', response_class=HTMLResponse)
-def reg(request: Request):
-    return templates.TemplateResponse(request=request, name="pr-reg.html")
-
-
+# api внесения изменений в зарегистрированную презентацию
 @app.post('/api/pr-edit/{prid}', response_class=HTMLResponse) #crUd
 def pr_view(prid, name=Form(), presenter=Form(), time=Form(), room_num=Form()):
     pres = db.query(Presentation).filter(Presentation.id == int(prid)).first()
@@ -62,17 +60,19 @@ def pr_view(prid, name=Form(), presenter=Form(), time=Form(), room_num=Form()):
         shed_pr.time = time
         db.commit()
     else:
-        return "Время или аудитория уже занято!!"
+        return {"message": "Время или аудитория уже занято!!"}
 
-    return "Изменения внесены!"
+    return {"message": "Изменения внесены!"}
 
 
+# api поиска презентаци человека (считается, что пользователей с одинаковым именем нет)
 @app.post('/presentors-pr-list/{prs_name}') #cRud
 def presentors_pr_list(prs_name):
     pres_list = db.query(Shedule).filter(Shedule.presenter == str(prs_name)).all()
     return pres_list
 
 
+# api удаления зарегистрированной презентации
 @app.post('/pr-delete/{prid}') #cruD
 def pr_delete(prid):
     pres_shed = db.query(Shedule).filter(Shedule.pr_id == int(prid)).first()
@@ -86,17 +86,26 @@ def pr_delete(prid):
         return {"message": "Запись успешно удалена!"}
 
 
+# страница для просмотра информации о презентации
 @app.get('/pr-view', response_class=HTMLResponse)
 def pr_view(request: Request):
     return templates.TemplateResponse(request=request, name="pr-view.html")
 
 
-@app.post('/api/pr-view/{prid}') #просмотр презентации для слушателей
+# api для поиска презентаций для страницы просмотра информации
+@app.post('/api/pr-view/{prid}')
 def reg(prid):
     pres = db.query(Presentation).filter(Presentation.id == int(prid)).first()
     return pres
 
 
+# Страница с формой регистрации презентаций для Presenter
+@app.get('/pr-reg', response_class=HTMLResponse)
+def reg(request: Request):
+    return templates.TemplateResponse(request=request, name="pr-reg.html")
+
+
+# Регистрация презентаций
 @app.post('/pr-regsuc', response_class=HTMLResponse) #Crud
 def pr_regsuc(request: Request, pr_name=Form(), presenter=Form(), time=Form(), room_num=Form()):
     block = db.query(Shedule).filter(Shedule.time == str(time), Shedule.room_id == int(room_num)).first()
@@ -108,17 +117,19 @@ def pr_regsuc(request: Request, pr_name=Form(), presenter=Form(), time=Form(), r
         db.add(new_shed)
         db.commit()
     else:
-        return "Выберите другое время или аудиторию"
+        return {"message": "Выберите другое время или аудиторию"}
     return templates.TemplateResponse(request=request, name="pr-regsuc.html", context={'shed':new_shed.id, 'time':time, 'room':room_num})
 
 
+# Страница с расписанием выступлений в виде таблицы с выбором аудитории
 @app.get('/confshed', response_class=HTMLResponse)
 def confshed(request: Request):
     return templates.TemplateResponse(request=request, name="confshed.html")
 
 
+# api поиска выступлений по номеру аудитории
 @app.get('/api/confshed/{num}')
-def api_confshed1(num):
+def api_confshed(num):
     try:
         confs = db.query(Shedule).filter(Shedule.room_id == int(num)).all()
         #REST api

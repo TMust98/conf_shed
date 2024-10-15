@@ -1,0 +1,300 @@
+openapi: 3.1.0
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /:
+    get:
+      summary: Index
+      operationId: index__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+  /reg:
+    get:
+      summary: Reg
+      operationId: reg_reg_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+  /regsuc:
+    post:
+      summary: Regsuc
+      operationId: regsuc_regsuc_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Body_regsuc_regsuc_post"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /api/pr-edit/{prid}:
+    post:
+      summary: Pr View
+      operationId: pr_view_api_pr_edit__prid__post
+      parameters:
+      - name: prid
+        in: path
+        required: true
+        schema:
+          title: Prid
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              "$ref": "#/components/schemas/Body_pr_view_api_pr_edit__prid__post"
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /presentors-pr-list/{prs_name}:
+    post:
+      summary: Presentors Pr List
+      operationId: presentors_pr_list_presentors_pr_list__prs_name__post
+      parameters:
+      - name: prs_name
+        in: path
+        required: true
+        schema:
+          title: Prs Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /pr-delete/{prid}:
+    post:
+      summary: Pr Delete
+      operationId: pr_delete_pr_delete__prid__post
+      parameters:
+      - name: prid
+        in: path
+        required: true
+        schema:
+          title: Prid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /pr-view:
+    get:
+      summary: Pr View
+      operationId: pr_view_pr_view_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+  /api/pr-view/{prid}:
+    post:
+      summary: Reg
+      operationId: reg_api_pr_view__prid__post
+      parameters:
+      - name: prid
+        in: path
+        required: true
+        schema:
+          title: Prid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /pr-reg:
+    get:
+      summary: Reg
+      operationId: reg_pr_reg_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+  /pr-regsuc:
+    post:
+      summary: Pr Regsuc
+      operationId: pr_regsuc_pr_regsuc_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/Body_pr_regsuc_pr_regsuc_post"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /confshed:
+    get:
+      summary: Confshed
+      operationId: confshed_confshed_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+  /api/confshed/{num}:
+    get:
+      summary: Api Confshed
+      operationId: api_confshed_api_confshed__num__get
+      parameters:
+      - name: num
+        in: path
+        required: true
+        schema:
+          title: Num
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    Body_pr_regsuc_pr_regsuc_post:
+      properties:
+        pr_name:
+          title: Pr Name
+        presenter:
+          title: Presenter
+        time:
+          title: Time
+        room_num:
+          title: Room Num
+      type: object
+      required:
+      - pr_name
+      - presenter
+      - time
+      - room_num
+      title: Body_pr_regsuc_pr_regsuc_post
+    Body_pr_view_api_pr_edit__prid__post:
+      properties:
+        name:
+          title: Name
+        presenter:
+          title: Presenter
+        time:
+          title: Time
+        room_num:
+          title: Room Num
+      type: object
+      required:
+      - name
+      - presenter
+      - time
+      - room_num
+      title: Body_pr_view_api_pr_edit__prid__post
+    Body_regsuc_regsuc_post:
+      properties:
+        name:
+          title: Name
+        pr_id:
+          title: Pr Id
+      type: object
+      required:
+      - name
+      - pr_id
+      title: Body_regsuc_regsuc_post
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
